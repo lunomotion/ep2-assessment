@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | EP2 Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Messages-specific overrides */
+        .main {
+            padding: 24px;
+            max-width: none;
+        }
+
+        .compose-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .compose-modal.active {
+            display: flex;
+        }
+
+        .compose-dialog {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .compose-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .compose-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .compose-body {
+            padding: 20px;
+        }
+
+        .compose-field {
+            margin-bottom: 16px;
+        }
+
+        .compose-field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .compose-field input,
+        .compose-field select,
+        .compose-field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .compose-field input:focus,
+        .compose-field select:focus,
+        .compose-field textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-bg);
+        }
+
+        .compose-field textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .compose-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-primary);
+        }
+
+        .template-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .template-chip {
+            padding: 6px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .template-chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-bg);
+        }
+
+        .reply-header {
+            background: var(--bg-primary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .thread-message {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .thread-message:last-child {
+            border-bottom: none;
+        }
+
+        .thread-message.sent {
+            background: var(--accent-bg);
+            margin: 16px;
+            border-radius: 12px;
+            border: none;
+        }
+
+        .thread-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .thread-sender {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .thread-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent-bg);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .thread-sender-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .thread-sender-name {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .thread-sender-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .thread-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .thread-body {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .thread-body p {
+            margin-bottom: 12px;
+        }
+
+        .thread-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 8px;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-light);
+            background: var(--bg-primary);
+        }
+
+        .quick-action {
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .quick-action:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .empty-message-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted);
+            text-align: center;
+            padding: 40px;
+        }
+
+        .empty-message-view svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">EP</div>
+                <span class="logo-text">EP2 Analytics</span>
+            </div>
+
+            <nav class="nav">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="submissions.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Submissions
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Analytics
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="messages.html" class="nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Messages
+                    <span class="nav-badge">3</span>
+                </a>
+            </nav>
+
+            <div class="nav-divider"></div>
+
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <header class="page-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <h1>Messages</h1>
+                    <p>Send personalized follow-ups based on assessment results</p>
+                </div>
+                <button class="btn btn-primary" onclick="openCompose()">
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Compose
+                </button>
+            </header>
+
+            <!-- Inbox Layout -->
+            <div class="inbox-layout">
+                <!-- Message List -->
+                <div class="message-list">
+                    <div class="message-list-header">
+                        <div class="filter-tabs" style="width: 100%;">
+                            <button class="filter-tab active" data-filter="all">All</button>
+                            <button class="filter-tab" data-filter="unread">Unread (3)</button>
+                            <button class="filter-tab" data-filter="sent">Sent</button>
+                        </div>
+                    </div>
+                    <div class="message-list-content">
+                        <!-- Message 1 - Unread -->
+                        <div class="message-item unread active" data-id="1" onclick="selectMessage(1)">
+                            <div class="message-meta">
+                                <span class="message-sender">Sarah Johnson</span>
+                                <span class="message-time">2 min ago</span>
+                            </div>
+                            <div class="message-subject">Re: Your EP2 Assessment Results</div>
+                            <div class="message-preview">Thank you so much for the detailed report! I had a question about...</div>
+                            <div class="message-tags">
+                                <span class="message-tag badge-tiger">🐅 Tiger</span>
+                                <span class="message-tag badge-high">High Risk</span>
+                            </div>
+                        </div>
+
+                        <!-- Message 2 - Unread -->
+                        <div class="message-item unread" data-id="2" onclick="selectMessage(2)">
+                            <div class="message-meta">
+                                <span class="message-sender">Michael Chen</span>
+                                <span class="message-time">1 hour ago</span>
+                            </div>
+                            <div class="message-subject">Question about my report recommendations</div>
+                            <div class="message-preview">Hi, I received my assessment and was curious about the franchise...</div>
+                            <div class="message-tags">
+                                <span class="message-tag badge-wolf">🐺 Wolf</span>
+                                <span class="message-tag badge-medium">Medium Risk</span>
+                            </div>
+                        </div>
+
+                        <!-- Message 3 - Unread -->
+                        <div class="message-item unread" data-id="3" onclick="selectMessage(3)">
+                            <div class="message-meta">
+                                <span class="message-sender">Emily Davis</span>
+                                <span class="message-time">3 hours ago</span>
+                            </div>
+                            <div class="message-subject">Interested in scheduling a consultation</div>
+                            <div class="message-preview">After reviewing my results, I'd love to discuss next steps...</div>
+                            <div class="message-tags">
+                                <span class="message-tag badge-whale">🐋 Whale</span>
+                                <span class="message-tag badge-low">Low Risk</span>
+                            </div>
+                        </div>
+
+                        <!-- Message 4 - Read -->
+                        <div class="message-item" data-id="4" onclick="selectMessage(4)">
+                            <div class="message-meta">
+                                <span class="message-sender">James Wilson</span>
+                                <span class="message-time">Yesterday</span>
+                            </div>
+                            <div class="message-subject">Re: Your EP2 Assessment Results</div>
+                            <div class="message-preview">Perfect, I'll review the additional materials you sent...</div>
+                            <div class="message-tags">
+                                <span class="message-tag badge-lion">🦁 Lion</span>
+                                <span class="message-tag badge-high">High Risk</span>
+                            </div>
+                        </div>
+
+                        <!-- Message 5 - Sent -->
+                        <div class="message-item" data-id="5" data-type="sent" onclick="selectMessage(5)">
+                            <div class="message-meta">
+                                <span class="message-sender">To: Amanda Foster</span>
+                                <span class="message-time">Yesterday</span>
+                            </div>
+                            <div class="message-subject">Your EP2 Assessment Results - Tiger Profile</div>
+                            <div class="message-preview">Hi Amanda, Congratulations on completing your EP2 Assessment...</div>
+                            <div class="message-tags">
+                                <span class="message-tag" style="background: var(--accent-bg); color: var(--accent);">Sent</span>
+                            </div>
+                        </div>
+
+                        <!-- Message 6 - Sent -->
+                        <div class="message-item" data-id="6" data-type="sent" onclick="selectMessage(6)">
+                            <div class="message-meta">
+                                <span class="message-sender">To: Robert Kim</span>
+                                <span class="message-time">2 days ago</span>
+                            </div>
+                            <div class="message-subject">Your EP2 Assessment Results - Wolf Profile</div>
+                            <div class="message-preview">Hi Robert, Thank you for taking the EP2 Assessment...</div>
+                            <div class="message-tags">
+                                <span class="message-tag" style="background: var(--accent-bg); color: var(--accent);">Sent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message View -->
+                <div class="message-view" id="messageView">
+                    <div class="message-view-header">
+                        <h2 class="message-view-subject">Re: Your EP2 Assessment Results</h2>
+                        <div class="message-view-meta">
+                            <div class="user-cell">
+                                <div class="user-avatar">SJ</div>
+                                <div class="user-info">
+                                    <div class="user-name">Sarah Johnson</div>
+                                    <div class="user-email">sarah.j@email.com</div>
+                                </div>
+                            </div>
+                            <div style="margin-left: auto; display: flex; gap: 8px;">
+                                <span class="badge badge-tiger">🐅 Tiger</span>
+                                <span class="badge badge-high">High Risk</span>
+                                <span class="badge badge-high">High Reward</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="message-view-content">
+                        <!-- Thread: Your sent message -->
+                        <div class="thread-message sent">
+                            <div class="thread-meta">
+                                <div class="thread-sender">
+                                    <div class="thread-avatar" style="background: var(--accent); color: white;">EP</div>
+                                    <div class="thread-sender-info">
+                                        <span class="thread-sender-name">EP2 Team</span>
+                                        <span class="thread-sender-label">You</span>
+                                    </div>
+                                </div>
+                                <span class="thread-time">Yesterday at 2:30 PM</span>
+                            </div>
+                            <div class="thread-body">
+                                <p>Hi Sarah,</p>
+                                <p>Congratulations on completing your EP2 Assessment! Based on your results, you're a <strong>Tiger</strong> - a bold, driven, and competitive entrepreneur.</p>
+                                <p>Your profile shows:</p>
+                                <p>• <strong>Risk Tolerance:</strong> High - You thrive in challenging situations<br>
+                                • <strong>Reward Orientation:</strong> High - You're motivated by significant outcomes<br>
+                                • <strong>Top Industries:</strong> Tech, Digital</p>
+                                <p>As a Tiger with high risk/high reward orientation, you might be well-suited for venture-backed startups or high-growth opportunities in the tech sector.</p>
+                                <p>Would you like to schedule a consultation to discuss your entrepreneurial path?</p>
+                                <p>Best,<br>The EP2 Team</p>
+                            </div>
+                        </div>
+
+                        <!-- Thread: Their reply -->
+                        <div class="thread-message">
+                            <div class="thread-meta">
+                                <div class="thread-sender">
+                                    <div class="thread-avatar">SJ</div>
+                                    <div class="thread-sender-info">
+                                        <span class="thread-sender-name">Sarah Johnson</span>
+                                        <span class="thread-sender-label">sarah.j@email.com</span>
+                                    </div>
+                                </div>
+                                <span class="thread-time">Today at 9:45 AM</span>
+                            </div>
+                            <div class="thread-body">
+                                <p>Thank you so much for the detailed report! I had a question about the tech sector recommendations.</p>
+                                <p>I've been considering a SaaS startup idea I've had for a while. Given my Tiger profile with high risk tolerance, do you think that's a good fit? I'd love to hear more about what specific opportunities you think would match my profile.</p>
+                                <p>Also, yes - I'd definitely like to schedule a consultation. What times work for you this week?</p>
+                                <p>Thanks,<br>Sarah</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Reply Templates -->
+                    <div class="quick-actions">
+                        <span style="font-size: 12px; color: var(--text-muted); margin-right: 8px;">Quick replies:</span>
+                        <button class="quick-action" onclick="insertTemplate('schedule')">Schedule call</button>
+                        <button class="quick-action" onclick="insertTemplate('resources')">Send resources</button>
+                        <button class="quick-action" onclick="insertTemplate('followup')">Follow up</button>
+                    </div>
+
+                    <!-- Reply Box -->
+                    <div class="message-reply">
+                        <textarea class="reply-input" id="replyInput" placeholder="Write your reply..."></textarea>
+                        <div class="reply-actions">
+                            <div class="template-chips">
+                                <span class="template-chip" onclick="insertTemplate('tiger-high')">🐅 Tiger + High Risk Template</span>
+                                <span class="template-chip" onclick="insertTemplate('consultation')">Schedule Consultation</span>
+                            </div>
+                            <button class="btn btn-primary" onclick="sendReply()">
+                                <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                Send Reply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Compose Modal -->
+    <div class="compose-modal" id="composeModal">
+        <div class="compose-dialog">
+            <div class="compose-header">
+                <h2>New Message</h2>
+                <button class="btn btn-secondary btn-sm" onclick="closeCompose()" style="padding: 8px;">
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="compose-body">
+                <div class="compose-field">
+                    <label>To</label>
+                    <input type="text" id="composeTo" placeholder="Select a respondent or enter email...">
+                </div>
+                <div class="compose-field">
+                    <label>Template (Based on Profile)</label>
+                    <select id="composeTemplate" onchange="loadTemplate()">
+                        <option value="">Select a template...</option>
+                        <optgroup label="By Personality">
+                            <option value="wolf">🐺 Wolf - Strategic Thinker</option>
+                            <option value="tiger">🐅 Tiger - Bold Achiever</option>
+                            <option value="whale">🐋 Whale - Steady Builder</option>
+                            <option value="lion">🦁 Lion - Natural Leader</option>
+                        </optgroup>
+                        <optgroup label="By Risk Level">
+                            <option value="high-risk">High Risk Tolerance</option>
+                            <option value="medium-risk">Medium Risk Tolerance</option>
+                            <option value="low-risk">Low Risk Tolerance</option>
+                        </optgroup>
+                        <optgroup label="By Reward Level">
+                            <option value="high-reward">High Reward Orientation</option>
+                            <option value="medium-reward">Medium Reward Orientation</option>
+                            <option value="low-reward">Low Reward Orientation</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="compose-field">
+                    <label>Subject</label>
+                    <input type="text" id="composeSubject" placeholder="Email subject...">
+                </div>
+                <div class="compose-field">
+                    <label>Message</label>
+                    <textarea id="composeMessage" placeholder="Write your message..."></textarea>
+                </div>
+            </div>
+            <div class="compose-footer">
+                <div class="template-chips">
+                    <span class="template-chip" onclick="appendSignature()">Add signature</span>
+                    <span class="template-chip" onclick="addPersonalization()">Add [Name] tag</span>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="closeCompose()">Cancel</button>
+                    <button class="btn btn-primary" onclick="sendMessage()">Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Message data
+        const messages = {
+            1: {
+                from: 'Sarah Johnson',
+                email: 'sarah.j@email.com',
+                subject: 'Re: Your EP2 Assessment Results',
+                personality: 'tiger',
+                risk: 'high',
+                reward: 'high',
+                time: 'Today at 9:45 AM',
+                thread: [
+                    {
+                        type: 'sent',
+                        sender: 'EP2 Team',
+                        time: 'Yesterday at 2:30 PM',
+                        body: `<p>Hi Sarah,</p>
+                            <p>Congratulations on completing your EP2 Assessment! Based on your results, you're a <strong>Tiger</strong> - a bold, driven, and competitive entrepreneur.</p>
+                            <p>Your profile shows:</p>
+                            <p>• <strong>Risk Tolerance:</strong> High - You thrive in challenging situations<br>
+                            • <strong>Reward Orientation:</strong> High - You're motivated by significant outcomes<br>
+                            • <strong>Top Industries:</strong> Tech, Digital</p>
+                            <p>As a Tiger with high risk/high reward orientation, you might be well-suited for venture-backed startups or high-growth opportunities in the tech sector.</p>
+                            <p>Would you like to schedule a consultation to discuss your entrepreneurial path?</p>
+                            <p>Best,<br>The EP2 Team</p>`
+                    },
+                    {
+                        type: 'received',
+                        sender: 'Sarah Johnson',
+                        time: 'Today at 9:45 AM',
+                        body: `<p>Thank you so much for the detailed report! I had a question about the tech sector recommendations.</p>
+                            <p>I've been considering a SaaS startup idea I've had for a while. Given my Tiger profile with high risk tolerance, do you think that's a good fit? I'd love to hear more about what specific opportunities you think would match my profile.</p>
+                            <p>Also, yes - I'd definitely like to schedule a consultation. What times work for you this week?</p>
+                            <p>Thanks,<br>Sarah</p>`
+                    }
+                ]
+            },
+            2: {
+                from: 'Michael Chen',
+                email: 'm.chen@company.com',
+                subject: 'Question about my report recommendations',
+                personality: 'wolf',
+                risk: 'medium',
+                reward: 'high',
+                time: '1 hour ago',
+                thread: [
+                    {
+                        type: 'received',
+                        sender: 'Michael Chen',
+                        time: 'Today at 8:30 AM',
+                        body: `<p>Hi,</p>
+                            <p>I received my assessment and was curious about the franchise recommendations mentioned in my report.</p>
+                            <p>As a Wolf with medium risk tolerance, the report suggested I might do well with established franchise models. Could you elaborate on what types of franchises might be a good fit?</p>
+                            <p>I'm particularly interested in the consulting and finance sectors that were highlighted.</p>
+                            <p>Thanks,<br>Michael</p>`
+                    }
+                ]
+            },
+            3: {
+                from: 'Emily Davis',
+                email: 'emily.d@startup.io',
+                subject: 'Interested in scheduling a consultation',
+                personality: 'whale',
+                risk: 'low',
+                reward: 'medium',
+                time: '3 hours ago',
+                thread: [
+                    {
+                        type: 'received',
+                        sender: 'Emily Davis',
+                        time: 'Today at 6:15 AM',
+                        body: `<p>Hello,</p>
+                            <p>After reviewing my results, I'd love to discuss next steps for my entrepreneurial journey.</p>
+                            <p>I understand that as a Whale, I tend to prefer stability and long-term growth over quick wins. I'm interested in healthcare and education sectors.</p>
+                            <p>Would it be possible to schedule a 30-minute call to discuss opportunities that might align with my profile?</p>
+                            <p>Best regards,<br>Emily</p>`
+                    }
+                ]
+            }
+        };
+
+        // Templates
+        const templates = {
+            'tiger': {
+                subject: 'Your EP2 Assessment Results - Tiger Profile',
+                body: `Hi [Name],
+
+Congratulations on completing your EP2 Assessment! Based on your results, you're a Tiger - a bold, driven, and competitive entrepreneur.
+
+Your profile shows high energy, decisive action, and a natural ability to take calculated risks. Tigers thrive in fast-paced environments and often excel in:
+• Tech startups and SaaS businesses
+• Competitive markets with high growth potential
+• Leadership roles in dynamic organizations
+
+I'd love to discuss how we can help you channel your Tiger energy into the right opportunity.
+
+Best,
+[Your Name]`
+            },
+            'wolf': {
+                subject: 'Your EP2 Assessment Results - Wolf Profile',
+                body: `Hi [Name],
+
+Thank you for completing your EP2 Assessment! Your results show you're a Wolf - a strategic, independent, and analytical entrepreneur.
+
+Wolves excel at:
+• Building sustainable, well-planned businesses
+• Making data-driven decisions
+• Operating independently while building strong networks
+
+Your strategic mindset is perfect for consulting, finance, or any field requiring deep analysis and careful planning.
+
+Would you like to explore opportunities that match your Wolf profile?
+
+Best,
+[Your Name]`
+            },
+            'whale': {
+                subject: 'Your EP2 Assessment Results - Whale Profile',
+                body: `Hi [Name],
+
+Congratulations on completing your EP2 Assessment! You're a Whale - steady, patient, and focused on long-term success.
+
+Whales are known for:
+• Building lasting, stable enterprises
+• Patient wealth accumulation
+• Strong relationship building
+
+Your profile suggests you'd thrive in established industries like healthcare, education, or stable franchise models.
+
+I'd love to discuss opportunities aligned with your Whale strengths.
+
+Best,
+[Your Name]`
+            },
+            'lion': {
+                subject: 'Your EP2 Assessment Results - Lion Profile',
+                body: `Hi [Name],
+
+Congratulations on completing your EP2 Assessment! You're a Lion - a natural leader who's confident and decisive.
+
+Lions excel at:
+• Leading teams and organizations
+• Making bold decisions quickly
+• Inspiring others and driving change
+
+Your leadership abilities make you well-suited for management buyouts, executive positions, or building team-based ventures.
+
+Let's discuss how to leverage your Lion leadership style.
+
+Best,
+[Your Name]`
+            },
+            'schedule': 'I\'d be happy to schedule a consultation! Here are some available times this week:\n\n• Tuesday 2-3 PM\n• Wednesday 10-11 AM\n• Thursday 3-4 PM\n\nLet me know what works best for you.',
+            'resources': 'I\'ve attached some additional resources that I think you\'ll find valuable based on your profile. Take a look and let me know if you have any questions!',
+            'followup': 'Just following up on our previous conversation. Have you had a chance to review the materials I sent? I\'d love to hear your thoughts.',
+            'consultation': 'I\'d love to schedule a time to discuss your results in more detail. Would you be available for a 30-minute call this week?',
+            'tiger-high': 'Given your Tiger profile with high risk tolerance, you\'re ideally positioned for high-growth opportunities. Many Tigers find success in venture-backed startups or emerging tech markets.'
+        };
+
+        function selectMessage(id) {
+            document.querySelectorAll('.message-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.message-item[data-id="${id}"]`).classList.add('active');
+            document.querySelector(`.message-item[data-id="${id}"]`).classList.remove('unread');
+
+            // Update message view (simplified - in production, render from messages object)
+            // For now, just show a confirmation that message is selected
+        }
+
+        function openCompose() {
+            document.getElementById('composeModal').classList.add('active');
+        }
+
+        function closeCompose() {
+            document.getElementById('composeModal').classList.remove('active');
+        }
+
+        function loadTemplate() {
+            const template = document.getElementById('composeTemplate').value;
+            if (templates[template]) {
+                if (typeof templates[template] === 'object') {
+                    document.getElementById('composeSubject').value = templates[template].subject;
+                    document.getElementById('composeMessage').value = templates[template].body;
+                }
+            }
+        }
+
+        function insertTemplate(templateKey) {
+            const template = templates[templateKey];
+            const replyInput = document.getElementById('replyInput');
+            if (template) {
+                replyInput.value = typeof template === 'string' ? template : template.body;
+            }
+            replyInput.focus();
+        }
+
+        function sendReply() {
+            const reply = document.getElementById('replyInput').value;
+            if (reply.trim()) {
+                alert('Reply sent successfully!');
+                document.getElementById('replyInput').value = '';
+            }
+        }
+
+        function sendMessage() {
+            const to = document.getElementById('composeTo').value;
+            const subject = document.getElementById('composeSubject').value;
+            const message = document.getElementById('composeMessage').value;
+
+            if (to && subject && message) {
+                alert('Message sent successfully!');
+                closeCompose();
+                document.getElementById('composeTo').value = '';
+                document.getElementById('composeSubject').value = '';
+                document.getElementById('composeMessage').value = '';
+            } else {
+                alert('Please fill in all fields');
+            }
+        }
+
+        function appendSignature() {
+            const message = document.getElementById('composeMessage');
+            message.value += '\n\nBest regards,\nThe EP2 Team';
+        }
+
+        function addPersonalization() {
+            const message = document.getElementById('composeMessage');
+            const cursorPos = message.selectionStart;
+            const text = message.value;
+            message.value = text.slice(0, cursorPos) + '[Name]' + text.slice(cursorPos);
+        }
+
+        // Filter tabs
+        document.querySelectorAll('.message-list-header .filter-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.message-list-header .filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const filter = this.dataset.filter;
+                document.querySelectorAll('.message-item').forEach(item => {
+                    if (filter === 'all') {
+                        item.style.display = '';
+                    } else if (filter === 'unread') {
+                        item.style.display = item.classList.contains('unread') ? '' : 'none';
+                    } else if (filter === 'sent') {
+                        item.style.display = item.dataset.type === 'sent' ? '' : 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

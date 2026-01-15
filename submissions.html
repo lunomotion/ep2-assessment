@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submissions | EP2 Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(250, 249, 247, 0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; flex-direction: column; gap: 16px;
+        }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div style="color: var(--text-secondary);">Loading submissions...</div>
+    </div>
+
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">EP</div>
+                <span class="logo-text">EP2 Analytics</span>
+            </div>
+
+            <nav class="nav">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="submissions.html" class="nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Submissions
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Analytics
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="messages.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Messages
+                    <span class="nav-badge">3</span>
+                </a>
+            </nav>
+
+            <div class="nav-divider"></div>
+
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <header class="page-header">
+                <h1>Submissions</h1>
+                <p>View and manage all assessment responses</p>
+            </header>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: 16px;">
+                <div class="card-body" style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                    <div class="search-box" style="flex: 1; min-width: 200px;">
+                        <svg style="width: 16px; height: 16px; color: var(--text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <input type="text" placeholder="Search by name or email..." id="searchInput">
+                    </div>
+
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="wolf">🐺 Wolf</button>
+                        <button class="filter-tab" data-filter="tiger">🐅 Tiger</button>
+                        <button class="filter-tab" data-filter="whale">🐋 Whale</button>
+                        <button class="filter-tab" data-filter="lion">🦁 Lion</button>
+                    </div>
+
+                    <select class="btn btn-secondary" id="riskFilter" style="padding: 8px 12px;">
+                        <option value="">All Risk Levels</option>
+                        <option value="high">High Risk</option>
+                        <option value="medium">Medium Risk</option>
+                        <option value="low">Low Risk</option>
+                    </select>
+
+                    <select class="btn btn-secondary" id="rewardFilter" style="padding: 8px 12px;">
+                        <option value="">All Reward Levels</option>
+                        <option value="high">High Reward</option>
+                        <option value="medium">Medium Reward</option>
+                        <option value="low">Low Reward</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Submissions Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">All Submissions</h3>
+                    <span style="color: var(--text-muted); font-size: 13px;">Showing <span id="resultCount">0</span> results</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Respondent</th>
+                            <th>Personality</th>
+                            <th>Risk Level</th>
+                            <th>Reward Level</th>
+                            <th>Completion Time</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="submissionsTable">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                                Loading submissions...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        let allSubmissions = [];
+        let currentPersonality = 'all';
+
+        function renderSubmissions(submissions) {
+            const tbody = document.getElementById('submissionsTable');
+            document.getElementById('resultCount').textContent = submissions.length;
+
+            if (submissions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 40px;">No submissions found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = submissions.map(sub => {
+                const initials = sub.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+                const personality = sub.personality.toLowerCase();
+                const personalityEmoji = { wolf: '🐺', tiger: '🐅', whale: '🐋', lion: '🦁' }[personality] || '';
+
+                return `
+                    <tr data-personality="${personality}" data-risk="${sub.risk.toLowerCase()}" data-reward="${sub.reward.toLowerCase()}">
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">${initials}</div>
+                                <div class="user-info">
+                                    <div class="user-name">${sub.name}</div>
+                                    <div class="user-email">${sub.email || 'No email'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge badge-${personality}">${personalityEmoji} ${sub.personality}</span></td>
+                        <td><span class="badge badge-${sub.risk.toLowerCase()}">${sub.risk}</span></td>
+                        <td><span class="badge badge-${sub.reward.toLowerCase()}">${sub.reward}</span></td>
+                        <td style="color: var(--text-muted); font-size: 13px;">${sub.completionTime || '--'}</td>
+                        <td style="color: var(--text-muted)">${window.EP2Data.formatRelativeTime(sub.submittedAt)}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="messages.html" class="btn btn-primary btn-sm">Message</a>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function filterSubmissions() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const riskValue = document.getElementById('riskFilter').value.toLowerCase();
+            const rewardValue = document.getElementById('rewardFilter').value.toLowerCase();
+
+            const filtered = allSubmissions.filter(sub => {
+                const matchesPersonality = currentPersonality === 'all' || sub.personality.toLowerCase() === currentPersonality;
+                const matchesRisk = !riskValue || sub.risk.toLowerCase() === riskValue;
+                const matchesReward = !rewardValue || sub.reward.toLowerCase() === rewardValue;
+                const matchesSearch = !searchTerm ||
+                    sub.name.toLowerCase().includes(searchTerm) ||
+                    (sub.email && sub.email.toLowerCase().includes(searchTerm));
+
+                return matchesPersonality && matchesRisk && matchesReward && matchesSearch;
+            });
+
+            renderSubmissions(filtered);
+        }
+
+        // Event listeners
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentPersonality = tab.dataset.filter;
+                filterSubmissions();
+            });
+        });
+
+        document.getElementById('searchInput').addEventListener('input', filterSubmissions);
+        document.getElementById('riskFilter').addEventListener('change', filterSubmissions);
+        document.getElementById('rewardFilter').addEventListener('change', filterSubmissions);
+
+        // Load data
+        async function loadSubmissions() {
+            try {
+                const data = await window.EP2Data.getDashboardData();
+                allSubmissions = data.submissions;
+                renderSubmissions(allSubmissions);
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            } catch (error) {
+                console.error('Failed to load submissions:', error);
+                document.getElementById('loadingOverlay').classList.add('hidden');
+                document.getElementById('submissionsTable').innerHTML = `
+                    <tr><td colspan="7" style="text-align: center; color: #dc2626; padding: 40px;">
+                        Failed to load data: ${error.message}
+                    </td></tr>`;
+            }
+        }
+
+        loadSubmissions();
+    </script>
+</body>
+</html>

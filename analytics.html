@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | EP2 Assessment</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .loading-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(250, 249, 247, 0.9);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; flex-direction: column; gap: 16px;
+        }
+        .loading-overlay.hidden { display: none; }
+        .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div style="color: var(--text-secondary);">Loading analytics...</div>
+    </div>
+
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">EP</div>
+                <span class="logo-text">EP2 Analytics</span>
+            </div>
+
+            <nav class="nav">
+                <a href="index.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="submissions.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Submissions
+                </a>
+                <a href="analytics.html" class="nav-item active">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                    Analytics
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="messages.html" class="nav-item">
+                    <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    Messages
+                    <span class="nav-badge">3</span>
+                </a>
+            </nav>
+
+            <div class="nav-divider"></div>
+
+            <a href="#" class="nav-item">
+                <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Settings
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <header class="page-header">
+                <h1>Analytics</h1>
+                <p>Deep insights into assessment patterns and trends</p>
+            </header>
+
+            <!-- Key Insights -->
+            <section class="analytics-grid">
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <div class="insight-icon" id="topTypeIcon" style="background: var(--tiger-bg);">🐅</div>
+                        <div class="insight-title">Most Common Type</div>
+                    </div>
+                    <div class="insight-value" id="topTypeValue" style="color: var(--tiger-color);">--</div>
+                    <div class="insight-desc" id="topTypeDesc">Loading...</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <div class="insight-icon" style="background: var(--danger-bg);">📈</div>
+                        <div class="insight-title">High Risk Tolerance</div>
+                    </div>
+                    <div class="insight-value" id="highRiskPercent">--%</div>
+                    <div class="insight-desc">Of respondents show high risk tolerance</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-header">
+                        <div class="insight-icon" style="background: var(--accent-bg);">💎</div>
+                        <div class="insight-title">Top Industry</div>
+                    </div>
+                    <div class="insight-value" id="topIndustry">--</div>
+                    <div class="insight-desc" id="topIndustryDesc">Loading...</div>
+                </div>
+            </section>
+
+            <!-- Personality Deep Dive -->
+            <div class="section-header">
+                <h2 class="section-title">Personality Breakdown</h2>
+            </div>
+
+            <section class="personality-grid" style="margin-bottom: 24px;">
+                <div class="personality-card wolf">
+                    <div class="personality-icon">🐺</div>
+                    <div class="personality-name">Wolf</div>
+                    <div class="personality-count" id="wolfCount">-- people</div>
+                    <div class="personality-percent" id="wolfPercent">--%</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary);">
+                        Strategic, Independent, Analytical
+                    </div>
+                </div>
+                <div class="personality-card tiger">
+                    <div class="personality-icon">🐅</div>
+                    <div class="personality-name">Tiger</div>
+                    <div class="personality-count" id="tigerCount">-- people</div>
+                    <div class="personality-percent" id="tigerPercent">--%</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary);">
+                        Bold, Driven, Competitive
+                    </div>
+                </div>
+                <div class="personality-card whale">
+                    <div class="personality-icon">🐋</div>
+                    <div class="personality-name">Whale</div>
+                    <div class="personality-count" id="whaleCount">-- people</div>
+                    <div class="personality-percent" id="whalePercent">--%</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary);">
+                        Steady, Patient, Long-term
+                    </div>
+                </div>
+                <div class="personality-card lion">
+                    <div class="personality-icon">🦁</div>
+                    <div class="personality-name">Lion</div>
+                    <div class="personality-count" id="lionCount">-- people</div>
+                    <div class="personality-percent" id="lionPercent">--%</div>
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary);">
+                        Leader, Confident, Decisive
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Row -->
+            <section class="charts-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Submissions Over Time</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="trendsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Risk vs Reward Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 280px;">
+                            <canvas id="riskRewardChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Industry & Correlations -->
+            <section class="charts-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Industry Preferences</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="industryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Personality Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="personalityChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Personality Type Statistics</h3>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Count</th>
+                            <th>Percentage</th>
+                            <th>Avg. Completion Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsTable">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                                Loading statistics...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        Chart.defaults.color = '#6b6b6b';
+        Chart.defaults.borderColor = '#e8e4df';
+
+        let trendsChart, riskRewardChart, industryChart, personalityChart;
+
+        function initCharts() {
+            // Trends Chart
+            const trendsCtx = document.getElementById('trendsChart').getContext('2d');
+            trendsChart = new Chart(trendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Submissions',
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        borderColor: '#6366f1',
+                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f0ede8' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Risk vs Reward Chart
+            const riskRewardCtx = document.getElementById('riskRewardChart').getContext('2d');
+            riskRewardChart = new Chart(riskRewardCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['High', 'Medium', 'Low'],
+                    datasets: [
+                        {
+                            label: 'Risk',
+                            data: [0, 0, 0],
+                            backgroundColor: '#dc2626',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Reward',
+                            data: [0, 0, 0],
+                            backgroundColor: '#6366f1',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, padding: 16 } }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: '#f0ede8' } }
+                    }
+                }
+            });
+
+            // Industry Chart
+            const industryCtx = document.getElementById('industryChart').getContext('2d');
+            industryChart = new Chart(industryCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Interest',
+                        data: [],
+                        backgroundColor: 'rgba(99, 102, 241, 0.8)',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { beginAtZero: true, grid: { color: '#f0ede8' } },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Personality Chart
+            const personalityCtx = document.getElementById('personalityChart').getContext('2d');
+            personalityChart = new Chart(personalityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Wolf', 'Tiger', 'Whale', 'Lion'],
+                    datasets: [{
+                        data: [25, 25, 25, 25],
+                        backgroundColor: ['#6366f1', '#ea580c', '#0891b2', '#dc2626'],
+                        borderWidth: 0,
+                        spacing: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' } }
+                    }
+                }
+            });
+        }
+
+        function updateAnalytics(data) {
+            const p = data.personalities;
+
+            // Find top personality
+            const types = [
+                { name: 'Wolf', count: p.wolf.count, percent: p.wolf.percent, emoji: '🐺', color: 'wolf' },
+                { name: 'Tiger', count: p.tiger.count, percent: p.tiger.percent, emoji: '🐅', color: 'tiger' },
+                { name: 'Whale', count: p.whale.count, percent: p.whale.percent, emoji: '🐋', color: 'whale' },
+                { name: 'Lion', count: p.lion.count, percent: p.lion.percent, emoji: '🦁', color: 'lion' }
+            ].sort((a, b) => b.count - a.count);
+
+            const topType = types[0];
+            document.getElementById('topTypeIcon').textContent = topType.emoji;
+            document.getElementById('topTypeIcon').style.background = `var(--${topType.color}-bg)`;
+            document.getElementById('topTypeValue').textContent = topType.name;
+            document.getElementById('topTypeValue').style.color = `var(--${topType.color}-color)`;
+            document.getElementById('topTypeDesc').textContent = `${topType.percent}% of all respondents`;
+
+            // High risk
+            document.getElementById('highRiskPercent').textContent = data.riskDistribution.high + '%';
+
+            // Top industry
+            const industries = Object.entries(data.industryPreferences);
+            if (industries.length > 0) {
+                const [topInd, topCount] = industries[0];
+                document.getElementById('topIndustry').textContent = topInd;
+                document.getElementById('topIndustryDesc').textContent = `${topCount} respondents interested`;
+            }
+
+            // Personality cards
+            document.getElementById('wolfCount').textContent = p.wolf.count + ' people';
+            document.getElementById('wolfPercent').textContent = p.wolf.percent + '%';
+            document.getElementById('tigerCount').textContent = p.tiger.count + ' people';
+            document.getElementById('tigerPercent').textContent = p.tiger.percent + '%';
+            document.getElementById('whaleCount').textContent = p.whale.count + ' people';
+            document.getElementById('whalePercent').textContent = p.whale.percent + '%';
+            document.getElementById('lionCount').textContent = p.lion.count + ' people';
+            document.getElementById('lionPercent').textContent = p.lion.percent + '%';
+
+            // Update charts
+            trendsChart.data.datasets[0].data = data.weeklyTrends;
+            trendsChart.update();
+
+            riskRewardChart.data.datasets[0].data = [
+                data.riskDistribution.high,
+                data.riskDistribution.medium,
+                data.riskDistribution.low
+            ];
+            riskRewardChart.data.datasets[1].data = [
+                data.rewardDistribution.high,
+                data.rewardDistribution.medium,
+                data.rewardDistribution.low
+            ];
+            riskRewardChart.update();
+
+            industryChart.data.labels = industries.map(([k]) => k);
+            industryChart.data.datasets[0].data = industries.map(([, v]) => v);
+            industryChart.update();
+
+            personalityChart.data.datasets[0].data = [p.wolf.count, p.tiger.count, p.whale.count, p.lion.count];
+            personalityChart.update();
+
+            // Stats table
+            const avgTimes = {};
+            data.submissions.forEach(s => {
+                if (!avgTimes[s.personality]) avgTimes[s.personality] = [];
+                if (s.completionTime) {
+                    const [mins, secs] = s.completionTime.split(':').map(Number);
+                    avgTimes[s.personality].push(mins * 60 + secs);
+                }
+            });
+
+            const statsRows = types.map(t => {
+                const times = avgTimes[t.name] || [];
+                const avgSecs = times.length > 0 ? times.reduce((a, b) => a + b, 0) / times.length : 0;
+                const avgMins = Math.floor(avgSecs / 60);
+                const avgSecsRem = Math.floor(avgSecs % 60);
+                const avgTime = times.length > 0 ? `${avgMins}:${String(avgSecsRem).padStart(2, '0')}` : '--';
+
+                return `
+                    <tr>
+                        <td><span class="badge badge-${t.color}">${t.emoji} ${t.name}</span></td>
+                        <td><strong>${t.count}</strong></td>
+                        <td>${t.percent}%</td>
+                        <td>${avgTime}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('statsTable').innerHTML = statsRows;
+        }
+
+        async function loadAnalytics() {
+            initCharts();
+
+            try {
+                const data = await window.EP2Data.getDashboardData();
+                updateAnalytics(data);
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            } catch (error) {
+                console.error('Failed to load analytics:', error);
+                document.getElementById('loadingOverlay').classList.add('hidden');
+            }
+        }
+
+        loadAnalytics();
+    </script>
+</body>
+</html>
