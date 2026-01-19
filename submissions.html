@@ -103,7 +103,7 @@
                         <button class="filter-tab active" data-filter="all">All</button>
                         <button class="filter-tab" data-filter="wolf">🐺 Wolf</button>
                         <button class="filter-tab" data-filter="tiger">🐅 Tiger</button>
-                        <button class="filter-tab" data-filter="whale">🐋 Whale</button>
+                        <button class="filter-tab" data-filter="killer whale">🐋 Killer Whale</button>
                         <button class="filter-tab" data-filter="lion">🦁 Lion</button>
                     </div>
 
@@ -170,7 +170,7 @@
             tbody.innerHTML = submissions.map(sub => {
                 const initials = sub.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                 const personality = sub.personality.toLowerCase();
-                const personalityEmoji = { wolf: '🐺', tiger: '🐅', whale: '🐋', lion: '🦁' }[personality] || '';
+                const personalityEmoji = { wolf: '🐺', tiger: '🐅', 'killer whale': '🐋', lion: '🦁' }[personality] || '';
 
                 return `
                     <tr data-personality="${personality}" data-risk="${sub.risk.toLowerCase()}" data-reward="${sub.reward.toLowerCase()}">

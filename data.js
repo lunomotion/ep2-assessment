@@ -14,27 +14,27 @@ const EP2_CONFIG = {
 const SAMPLE_SUBMISSIONS = [
     { id: 1, name: 'Sarah Chen', email: 'sarah.chen@example.com', personality: 'Wolf', risk: 'High', reward: 'High', completionTime: '4:32', submittedAt: new Date(Date.now() - 1000 * 60 * 30) },
     { id: 2, name: 'Marcus Johnson', email: 'marcus.j@example.com', personality: 'Tiger', risk: 'High', reward: 'Medium', completionTime: '3:45', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 2) },
-    { id: 3, name: 'Emily Rodriguez', email: 'emily.r@example.com', personality: 'Whale', risk: 'Low', reward: 'Medium', completionTime: '6:12', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 5) },
+    { id: 3, name: 'Emily Rodriguez', email: 'emily.r@example.com', personality: 'Killer Whale', risk: 'Low', reward: 'Medium', completionTime: '6:12', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 5) },
     { id: 4, name: 'David Kim', email: 'david.kim@example.com', personality: 'Lion', risk: 'Medium', reward: 'High', completionTime: '4:58', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 8) },
     { id: 5, name: 'Jessica Thompson', email: 'jthompson@example.com', personality: 'Wolf', risk: 'Medium', reward: 'Medium', completionTime: '5:23', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 24) },
     { id: 6, name: 'Michael Brown', email: 'mbrown@example.com', personality: 'Tiger', risk: 'High', reward: 'High', completionTime: '3:15', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 26) },
-    { id: 7, name: 'Amanda White', email: 'amanda.w@example.com', personality: 'Whale', risk: 'Low', reward: 'Low', completionTime: '7:45', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48) },
+    { id: 7, name: 'Amanda White', email: 'amanda.w@example.com', personality: 'Killer Whale', risk: 'Low', reward: 'Low', completionTime: '7:45', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 48) },
     { id: 8, name: 'Christopher Lee', email: 'chris.lee@example.com', personality: 'Lion', risk: 'Medium', reward: 'Medium', completionTime: '4:02', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 52) },
     { id: 9, name: 'Nicole Garcia', email: 'ngarcia@example.com', personality: 'Wolf', risk: 'High', reward: 'Medium', completionTime: '5:55', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 72) },
     { id: 10, name: 'Ryan Martinez', email: 'ryan.m@example.com', personality: 'Tiger', risk: 'Medium', reward: 'High', completionTime: '3:38', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 96) },
-    { id: 11, name: 'Stephanie Wilson', email: 'swilson@example.com', personality: 'Whale', risk: 'Low', reward: 'Medium', completionTime: '6:28', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 120) },
+    { id: 11, name: 'Stephanie Wilson', email: 'swilson@example.com', personality: 'Killer Whale', risk: 'Low', reward: 'Medium', completionTime: '6:28', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 120) },
     { id: 12, name: 'Daniel Taylor', email: 'dtaylor@example.com', personality: 'Lion', risk: 'High', reward: 'High', completionTime: '4:15', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 144) },
     { id: 13, name: 'Rachel Anderson', email: 'rachel.a@example.com', personality: 'Wolf', risk: 'Medium', reward: 'Low', completionTime: '5:42', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 168) },
     { id: 14, name: 'James Moore', email: 'jmoore@example.com', personality: 'Tiger', risk: 'High', reward: 'Medium', completionTime: '3:52', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 192) },
-    { id: 15, name: 'Lauren Jackson', email: 'ljackson@example.com', personality: 'Whale', risk: 'Medium', reward: 'Medium', completionTime: '6:05', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 216) },
+    { id: 15, name: 'Lauren Jackson', email: 'ljackson@example.com', personality: 'Killer Whale', risk: 'Medium', reward: 'Medium', completionTime: '6:05', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 216) },
     { id: 16, name: 'Kevin Harris', email: 'kharris@example.com', personality: 'Lion', risk: 'Low', reward: 'High', completionTime: '4:48', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 240) },
     { id: 17, name: 'Megan Clark', email: 'mclark@example.com', personality: 'Wolf', risk: 'High', reward: 'High', completionTime: '5:18', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 264) },
     { id: 18, name: 'Andrew Lewis', email: 'alewis@example.com', personality: 'Tiger', risk: 'Medium', reward: 'Medium', completionTime: '3:28', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 288) },
-    { id: 19, name: 'Brittany Robinson', email: 'brobinson@example.com', personality: 'Whale', risk: 'Low', reward: 'Low', completionTime: '7:12', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 312) },
+    { id: 19, name: 'Brittany Robinson', email: 'brobinson@example.com', personality: 'Killer Whale', risk: 'Low', reward: 'Low', completionTime: '7:12', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 312) },
     { id: 20, name: 'Tyler Walker', email: 'twalker@example.com', personality: 'Lion', risk: 'High', reward: 'Medium', completionTime: '4:35', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 336) },
     { id: 21, name: 'Samantha Hall', email: 'shall@example.com', personality: 'Wolf', risk: 'Medium', reward: 'High', completionTime: '5:08', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 360) },
     { id: 22, name: 'Brandon Young', email: 'byoung@example.com', personality: 'Tiger', risk: 'High', reward: 'High', completionTime: '3:42', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 384) },
-    { id: 23, name: 'Kayla Allen', email: 'kallen@example.com', personality: 'Whale', risk: 'Medium', reward: 'Low', completionTime: '6:55', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 408) },
+    { id: 23, name: 'Kayla Allen', email: 'kallen@example.com', personality: 'Killer Whale', risk: 'Medium', reward: 'Low', completionTime: '6:55', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 408) },
     { id: 24, name: 'Justin King', email: 'jking@example.com', personality: 'Lion', risk: 'Low', reward: 'Medium', completionTime: '4:22', submittedAt: new Date(Date.now() - 1000 * 60 * 60 * 432) },
 ];
 
@@ -95,13 +95,13 @@ class EP2DataManager {
     }
 
     calculatePersonalityDistribution(submissions) {
-        const counts = { Wolf: 0, Tiger: 0, Whale: 0, Lion: 0 };
+        const counts = { Wolf: 0, Tiger: 0, 'Killer Whale': 0, Lion: 0 };
         submissions.forEach(s => { if (counts.hasOwnProperty(s.personality)) counts[s.personality]++; });
         const total = submissions.length || 1;
         return {
             wolf: { count: counts.Wolf, percent: ((counts.Wolf / total) * 100).toFixed(1) },
             tiger: { count: counts.Tiger, percent: ((counts.Tiger / total) * 100).toFixed(1) },
-            whale: { count: counts.Whale, percent: ((counts.Whale / total) * 100).toFixed(1) },
+            whale: { count: counts['Killer Whale'], percent: ((counts['Killer Whale'] / total) * 100).toFixed(1) },
             lion: { count: counts.Lion, percent: ((counts.Lion / total) * 100).toFixed(1) }
         };
     }

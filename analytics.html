@@ -144,7 +144,7 @@
                 </div>
                 <div class="personality-card whale">
                     <div class="personality-icon">🐋</div>
-                    <div class="personality-name">Whale</div>
+                    <div class="personality-name">Killer Whale</div>
                     <div class="personality-count" id="whaleCount">-- people</div>
                     <div class="personality-percent" id="whalePercent">--%</div>
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-light); font-size: 12px; color: var(--text-secondary);">
@@ -339,7 +339,7 @@
             personalityChart = new Chart(personalityCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Wolf', 'Tiger', 'Whale', 'Lion'],
+                    labels: ['Wolf', 'Tiger', 'Killer Whale', 'Lion'],
                     datasets: [{
                         data: [25, 25, 25, 25],
                         backgroundColor: ['#6366f1', '#ea580c', '#0891b2', '#dc2626'],
@@ -365,7 +365,7 @@
             const types = [
                 { name: 'Wolf', count: p.wolf.count, percent: p.wolf.percent, emoji: '🐺', color: 'wolf' },
                 { name: 'Tiger', count: p.tiger.count, percent: p.tiger.percent, emoji: '🐅', color: 'tiger' },
-                { name: 'Whale', count: p.whale.count, percent: p.whale.percent, emoji: '🐋', color: 'whale' },
+                { name: 'Killer Whale', count: p.whale.count, percent: p.whale.percent, emoji: '🐋', color: 'whale' },
                 { name: 'Lion', count: p.lion.count, percent: p.lion.percent, emoji: '🦁', color: 'lion' }
             ].sort((a, b) => b.count - a.count);
 

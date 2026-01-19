@@ -174,7 +174,7 @@
                 </div>
                 <div class="personality-card whale">
                     <div class="personality-icon">🐋</div>
-                    <div class="personality-name">Whale</div>
+                    <div class="personality-name">Killer Whale</div>
                     <div class="personality-count" id="whaleCount">-- people</div>
                     <div class="personality-percent" id="whalePercent">--%</div>
                 </div>
@@ -381,7 +381,7 @@
                 tbody.innerHTML = recent.map(sub => {
                     const initials = sub.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
                     const personality = sub.personality.toLowerCase();
-                    const personalityEmoji = { wolf: '🐺', tiger: '🐅', whale: '🐋', lion: '🦁' }[personality] || '';
+                    const personalityEmoji = { wolf: '🐺', tiger: '🐅', 'killer whale': '🐋', lion: '🦁' }[personality] || '';
 
                     return `
                         <tr>
